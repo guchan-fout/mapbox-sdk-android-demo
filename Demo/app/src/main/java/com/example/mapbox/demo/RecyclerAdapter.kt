@@ -1,10 +1,9 @@
 package com.example.mapbox.demo
 
+import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater.from
-import com.example.mapbox.demo.databinding.ActivityMainBinding
 import com.example.mapbox.demo.databinding.RecycleviewItemBinding
 
 class RecyclerAdapter(private val customList: Array<String>) :
@@ -12,11 +11,13 @@ class RecyclerAdapter(private val customList: Array<String>) :
 
     private lateinit var listener: OnItemClickListener
     private lateinit var binding: RecycleviewItemBinding
-    class RecyclerAdapterViewHolder(val binding: RecycleviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    class RecyclerAdapterViewHolder(val binding: RecycleviewItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapterViewHolder {
-        binding = RecycleviewItemBinding.inflate(from(parent.context),parent,false)
+        binding = RecycleviewItemBinding.inflate(from(parent.context), parent, false)
 
         return RecyclerAdapterViewHolder(
             binding
