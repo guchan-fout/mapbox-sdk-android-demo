@@ -12,6 +12,7 @@ import com.mapbox.maps.extension.style.style
 import timber.log.Timber
 
 class MapLoadStyleActivity : AppCompatActivity() {
+    private lateinit var mapView: MapView
     val observer = Observer { event ->
         Timber.d("type ${event.type}, data ${event.data.toJson()}")
         when (event.type) {
@@ -26,7 +27,7 @@ class MapLoadStyleActivity : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mapView = MapView(this)
+        mapView = MapView(this)
         mapView.getMapboxMap().subscribe(
             observer, listOf(// Camera events
                 MapEvents.CAMERA_CHANGED,
@@ -78,6 +79,11 @@ class MapLoadStyleActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+        mapView.getMapboxMap().unsubscribe(observer)
     }
 
     companion object {
