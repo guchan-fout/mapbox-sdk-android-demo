@@ -8,7 +8,6 @@ import android.location.LocationRequest
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
