@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
             arrayOf(
                 "Request GPS permission",
                 "Move to Map Activity",
-                "Move to Map with StyleLoad"
+                "Move to Map with StyleLoad",
+                "Move to Map with SymbolLayer"
             )
         val adapter =
             RecyclerAdapter(list)
@@ -59,6 +60,11 @@ class MainActivity : AppCompatActivity() {
                     2 -> {
                         val intent =
                             Intent(this@MainActivity, MapLoadStyleActivity::class.java)
+                        startActivity(intent)
+                    }
+                    3 -> {
+                        val intent =
+                            Intent(this@MainActivity, MapLoadSymbolStyleActivity::class.java)
                         startActivity(intent)
                     }
                     else -> {
