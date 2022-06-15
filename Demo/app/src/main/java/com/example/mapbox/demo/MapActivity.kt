@@ -17,15 +17,20 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.mapbox.api.tilequery.MapboxTilequery
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraBoundsOptions
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.observable.eventdata.MapIdleEventData
+import com.mapbox.maps.plugin.attribution.attribution
+import com.mapbox.maps.plugin.delegates.listeners.OnMapIdleListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
 
-class MapActivity : AppCompatActivity() {
+class MapActivity : AppCompatActivity(),OnMapIdleListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var mapView: MapView
@@ -37,6 +42,15 @@ class MapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         mapView = MapView(this)
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+        //mapView.logo.enabled = false
+        mapView.attribution.enabled = false
+        mapView.getMapboxMap().addOnMapIdleListener(this)
+
+        val cameraBoundsOptions = CameraBoundsOptions.Builder()
+            .maxPitch(10.0)
+            .build()
+        mapView.getMapboxMap().setBounds(cameraBoundsOptions)
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -72,6 +86,9 @@ class MapActivity : AppCompatActivity() {
                         .center(com.mapbox.geojson.Point.fromLngLat(it.longitude, it.latitude))
                         .build()
                 )
+
+
+
                 var params: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -123,7 +140,6 @@ class MapActivity : AppCompatActivity() {
         }
         retrieveBtn.text = "Retrieve tilequery"
         retrieveBtn.setTextColor(Color.BLUE)
-
     }
 
 
@@ -157,6 +173,10 @@ class MapActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    override fun onMapIdle(eventData: MapIdleEventData) {
+        Timber.d("onMapIdle: %s", eventData.toString())
     }
 
 
