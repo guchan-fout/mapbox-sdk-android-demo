@@ -15,15 +15,17 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.mapbox.api.tilequery.MapboxTilequery
+import com.mapbox.common.TileRegionLoadOptions
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraBoundsOptions
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
+import com.mapbox.maps.*
 import com.mapbox.maps.extension.observable.eventdata.MapIdleEventData
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.delegates.listeners.OnMapIdleListener
+import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin
+import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin2
+import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.maps.plugin.locationcomponent.location2
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,10 +44,37 @@ class MapActivity : AppCompatActivity(),OnMapIdleListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         mapView = MapView(this)
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+
+       // mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+        mapView.getMapboxMap().loadStyleUri(
+            Style.MAPBOX_STREETS,
+            // After the style is loaded, initialize the Location component.
+            object : Style.OnStyleLoaded {
+                override fun onStyleLoaded(style: Style) {
+                    var params: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    addContentView(mapView, params)
+                    mapView.location.updateSettings {
+                        //enabled = true
+                        Timber.d("updateSettings1")
+                    }
+                }
+            }
+        )
+
+        //mapView.attribution.getMapAttributionDelegate().telemetry().setUserTelemetryRequestState()
         //mapView.logo.enabled = false
-        mapView.attribution.enabled = false
+
         mapView.getMapboxMap().addOnMapIdleListener(this)
+        val locationComponentPlugin = mapView.location2
+        locationComponentPlugin.updateSettings {
+            enabled = true
+        }
+        locationComponentPlugin.updateSettings2 {
+
+        }
 
         val cameraBoundsOptions = CameraBoundsOptions.Builder()
             .maxPitch(10.0)
@@ -83,17 +112,13 @@ class MapActivity : AppCompatActivity(),OnMapIdleListener {
                 mapView.getMapboxMap().setCamera(
                     CameraOptions.Builder()
                         .zoom(11.0)
-                        .center(com.mapbox.geojson.Point.fromLngLat(it.longitude, it.latitude))
+                        .center(Point.fromLngLat(it.longitude, it.latitude))
                         .build()
                 )
 
 
 
-                var params: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                this.addContentView(mapView, params)
+
 
             }
 
@@ -136,7 +161,11 @@ class MapActivity : AppCompatActivity(),OnMapIdleListener {
         //retrieveBtn.layoutParams = params
         this.addContentView(retrieveBtn, params)
         retrieveBtn.setOnClickListener {
-            getTileQuery()
+            //getTileQuery()
+            mapView.location.updateSettings {
+                //enabled = true
+                Timber.d("updateSettings2")
+            }
         }
         retrieveBtn.text = "Retrieve tilequery"
         retrieveBtn.setTextColor(Color.BLUE)
