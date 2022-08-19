@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Demo">
         <activity
+            android:name=".MapByJavaActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapLoadStyleActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity">
