@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity() {
                 "Move to Map Activity",
                 "Move to Map with StyleLoad",
                 "Move to Map with SymbolLayer",
-                "Move to Trail Test"
+                "Move to Trail Test",
+                "Navigation route preview"
             )
         val adapter =
             RecyclerAdapter(list)
@@ -71,6 +72,11 @@ class MainActivity : AppCompatActivity() {
                     4 -> {
                         val intent =
                             Intent(this@MainActivity, TrailTestActivity::class.java)
+                        startActivity(intent)
+                    }
+                    5 -> {
+                        val intent =
+                            Intent(this@MainActivity, NavigationRoutePreviewActivity::class.java)
                         startActivity(intent)
                     }
                     else -> {
